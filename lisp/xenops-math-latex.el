@@ -167,7 +167,10 @@ format the commands."
     (aio-await (aio-sem-wait xenops-math-latex-tasks-semaphore))
     (with-current-buffer buffer
       (xenops-math-set-marker-on-element element))
-    (let* ((dir (f-join temporary-file-directory "xenops"))
+    ;; temporary fix to convert 8dot3 short file name into the long file name on Windows, 
+    ;; as it is not supported by MIKTEX in newer versions
+    ;; see https://miktex.org/announcement/miktex-2-9-7440
+    (let* ((dir (f-join (w32-long-file-name temporary-file-directory) "xenops"))
            (base-name (f-base cache-file))
            (make-file-name (lambda (ext) (f-join dir (concat base-name "." ext))))
            (tex-file (funcall make-file-name "tex"))
